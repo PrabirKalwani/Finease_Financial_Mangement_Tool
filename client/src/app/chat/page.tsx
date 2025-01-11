@@ -32,7 +32,7 @@ export default function ChatPage() {
   }, [email])
 
   // Function to send message
-  const sendMessage = async (e) => {
+  const sendMessage = async (e: React.FormEvent) => {
     e.preventDefault()
     if (userInput.trim() === "") return
 
@@ -73,9 +73,9 @@ export default function ChatPage() {
         ])
 
         setUserInput('')
-      } catch (error) {
-        console.error("Error sending message:", error)
-        alert(`Network error: ${error.message}`)
+      } catch  {
+        console.error("Error sending message:")
+        alert(`Network error`)
       }
     } else {
       console.error("User details are not available.")
