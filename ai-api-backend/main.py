@@ -2,21 +2,39 @@ from flask import Flask, request, jsonify
 import google.generativeai as genai
 from dotenv import load_dotenv
 import os
+from flask_cors import CORS
 
-# Initialize Flask app
+
 app = Flask(__name__)
+CORS(app)  
 
-# Load environment variables from .env file
+
 load_dotenv()
 
-# Retrieve API key from environment variable
+
 api_key = os.getenv("API_KEY")
 
-# Configure Generative AI API
+
 if api_key:
     genai.configure(api_key=api_key)
 else:
     raise ValueError("API_KEY not found in environment variables")
+
+card_title = "Return on Investment"
+card_desc = "Return on investment (ROI) is a performance measure used to evaluate the efficiency of an investment or compare the efficiency of several investments."
+
+sys_prompt = f"""
+You are a financial analyst bot, that helps users understand the financial term -{card_title}, using very basic scenarios and analogies.
+definition of {card_title} is: {card_desc}
+Use as simple analogies as possible to explain the context.
+Keep the response as short and simple as possible.
+
+Rules:
+1. Response should be Small.(3-4 lines at maximum)
+2. Talk professionally.
+3. At the end, explain how the analogy highlights the given term.
+4. Try to keep the conversation around {card_title}
+"""
 
 sys_prompt_template = """
 You are a financial portfolio building chatbot, that suggests users where to invest their money.
@@ -36,16 +54,16 @@ Rules:
 4. ONLY WHERE TO INVEST SHOULD BE IN RESPONSE AND EXPLAIN WHY TO INVEST IN THAT.
 """
 
-# Create generative model
+
 model = genai.GenerativeModel("gemini-1.5-flash")
 
-# Store conversation history
+
 conversation_history = []
 
 @app.route("/generate", methods=["POST"])
 def generate_response():
     try:
-        # Get user input and preferences from request
+        
         data = request.get_json()
         user_input = data.get("user_input", "")
         budget_amt = data.get("budget_amt", 100000)
@@ -55,18 +73,18 @@ def generate_response():
         if not user_input:
             return jsonify({"error": "User input is required."}), 400
 
-        # Generate system prompt with user preferences
+        
         sys_prompt = sys_prompt_template.format(
             budget_amt=budget_amt, budget_type=budget_type, risk_apetite=risk_apetite
         )
 
-        # Update conversation history
+        
         conversation_history.append(f"You: {user_input}")
         
-        # Pass the full prompt (combining history and system instructions) to the model
+        
         prompt = "\n".join(conversation_history) + "\n" + sys_prompt
 
-        # Generate response
+        
         response = model.generate_content(
             prompt,
             generation_config=genai.GenerationConfig(
@@ -75,7 +93,7 @@ def generate_response():
             )
         )
 
-        # Extract AI response
+        
         if hasattr(response, 'text') and response.text:
             ai_response = response.text.strip()
             conversation_history.append(f"AI: {ai_response}")
@@ -92,6 +110,40 @@ def reset_conversation():
     global conversation_history
     conversation_history = []
     return jsonify({"message": "Conversation history reset."})
+
+
+@app.route('/aayush-generate', methods=['POST'])
+def aayush_generate():
+    user_input = request.json.get('input')
+
+    if user_input:
+        conversation_history.append(f"You: {user_input}")
+
+        try:
+            response = model.generate_content(
+                "\n".join(conversation_history), 
+                generation_config=genai.GenerationConfig(
+                    max_output_tokens=1000,
+                    temperature=0.8,  
+                )
+            )
+
+            ai_response = response.text.strip() if hasattr(response, 'text') else "Error: No valid response text received."
+
+            conversation_history.append(f"AI: {ai_response}")
+
+            return jsonify({"response": ai_response})
+
+        except Exception as e:
+            return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+    else:
+        return jsonify({"error": "Invalid input, please provide a valid message."}), 400
+
+
+
+
+
+
 
 if __name__ == "__main__":
     app.run(debug=True ,port=1234,host="0.0.0.0")

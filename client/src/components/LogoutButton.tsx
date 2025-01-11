@@ -19,7 +19,7 @@ export default function LogoutButton() {
       } else {
         toast.error('Failed to logout. Please try again.')
       }
-    } catch (error) {
+    } catch {
       toast.error('An unexpected error occurred')
     } finally {
       setLoading(false)

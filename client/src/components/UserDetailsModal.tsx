@@ -17,8 +17,7 @@ export default function UserDetailsModal({ isOpen, onClose, email }: UserDetails
 
   if (!isOpen) return null
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const handleSubmit = async () => {
     setLoading(true)
 
     const payload = {
@@ -62,7 +61,7 @@ export default function UserDetailsModal({ isOpen, onClose, email }: UserDetails
             try {
               const jsonData = JSON.parse(data)
               errorMessage = jsonData.message || errorMessage
-            } catch (e) {
+            } catch {
               errorMessage = data
             }
           }

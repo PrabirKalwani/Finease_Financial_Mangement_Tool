@@ -2,6 +2,7 @@
 
 import LoginForm from '@/components/LoginForm'
 import { useTheme } from '@/context/ThemeContext'
+import { Suspense } from 'react'
 
 export default function LoginPage() {
   const { isDarkMode, toggleDarkMode } = useTheme()
@@ -20,7 +21,10 @@ export default function LoginPage() {
             </a>
           </p>
         </div>
+        <Suspense fallback={<div>Loading...</div>}>
+
         <LoginForm />
+        </Suspense>
         <div className="absolute top-4 right-4">
           <button
             onClick={toggleDarkMode}

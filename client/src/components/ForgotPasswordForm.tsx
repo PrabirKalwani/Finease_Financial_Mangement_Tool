@@ -20,7 +20,7 @@ export default function ForgotPasswordForm() {
       } else {
         toast.error(result.error || 'Failed to send reset email')
       }
-    } catch (err) {
+    } catch  {
       toast.error('An unexpected error occurred')
     } finally {
       setLoading(false)
