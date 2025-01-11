@@ -7,11 +7,6 @@ const {
   sendPasswordResetEmail,
 } = require("../config/firebase");
 
-// Firestore imports
-const { getFirestore, doc, setDoc, updateDoc } = require("firebase/firestore");
-const auth = getAuth();
-const db = getFirestore();
-
 class FirebaseAuthController {
   async registerUser(req, res) {
     const { email, password } = req.body;
@@ -32,15 +27,6 @@ class FirebaseAuthController {
 
       // Send email verification
       await sendEmailVerification(auth.currentUser);
-
-      // Add the new user to Firestore with uid as the document ID
-      const userDocRef = doc(db, "users", user.uid);
-      await setDoc(userDocRef, {
-        email: user.email,
-        uid: user.uid,
-        is_online: false, // Initially false; will be set to true on login
-        is_searching: false,
-      });
 
       res.status(201).json({
         message: "Verification email sent! User created successfully!",
@@ -71,10 +57,6 @@ class FirebaseAuthController {
       );
       const user = userCredential.user;
 
-      // Update the user's status to online
-      const userDocRef = doc(db, "users", user.uid);
-      await updateDoc(userDocRef, { is_online: true });
-
       const idToken = userCredential._tokenResponse.idToken;
       if (idToken) {
         res.cookie("access_token", idToken, {
@@ -103,10 +85,6 @@ class FirebaseAuthController {
           .status(400)
           .json({ message: "No user is currently logged in" });
       }
-
-      // Update the user's status to offline
-      const userDocRef = doc(db, "users", user.uid);
-      await updateDoc(userDocRef, { is_online: false });
 
       await signOut(auth);
       res.clearCookie("access_token");
