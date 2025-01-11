@@ -1,6 +1,6 @@
 'use client'
 
-import { Line, LineChart, ResponsiveContainer, XAxis, YAxis, LabelList } from 'recharts'
+import { Line, LineChart, ResponsiveContainer, XAxis, YAxis, Legend } from 'recharts'
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart'
 import { Transaction } from '@/lib/types'
 
@@ -30,12 +30,12 @@ export default function TransactionLineChart({ transactions }: { transactions: T
           color: 'hsl(var(--chart-2))',
         },
       }}
-      className="h-[300px]"
+      className="h-[350px] w-full"
     >
       <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={data}>
-          <XAxis dataKey="date" />
-          <YAxis />
+        <LineChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 30 }}>
+          <XAxis dataKey="date" tick={{ fontSize: 12 }} />
+          <YAxis tick={{ fontSize: 12 }} />
           <ChartTooltip content={<ChartTooltipContent />} />
           <Line
             type="monotone"
@@ -43,18 +43,14 @@ export default function TransactionLineChart({ transactions }: { transactions: T
             stroke="var(--color-credit)"
             name="Credit"
             isAnimationActive={false}
-          >
-            <LabelList dataKey="credit" position="top" style={{ fill: 'var(--color-credit)' }} />
-          </Line>
+          />
           <Line
             type="monotone"
             dataKey="debit"
             stroke="var(--color-debit)"
             name="Debit"
             isAnimationActive={false}
-          >
-            <LabelList dataKey="debit" position="top" style={{ fill: 'var(--color-debit)' }} />
-          </Line>
+          />
         </LineChart>
       </ResponsiveContainer>
     </ChartContainer>
