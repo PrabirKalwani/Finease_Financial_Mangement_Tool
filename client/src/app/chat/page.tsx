@@ -1,6 +1,11 @@
+'use client'
+
 import BottomNav from '@/components/BottomNav'
+import { useTheme } from '@/context/ThemeContext'
 
 export default function ChatPage() {
+  const { isDarkMode } = useTheme()
+  
   const messages = [
     { id: 1, text: "Hi! How can I help you today?", sender: "ai" },
     { id: 2, text: "I need help with Python loops", sender: "user" },
@@ -8,16 +13,16 @@ export default function ChatPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <header className="bg-white shadow dark:bg-gray-800">
         <div className="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8">
-          <h1 className="text-2xl font-bold text-gray-900">Chat</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Chat</h1>
         </div>
       </header>
 
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8 pb-24">
         <div className="px-4 py-6 sm:px-0">
-          <div className="bg-white rounded-lg shadow">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
             {/* Chat Messages */}
             <div className="h-[calc(100vh-300px)] overflow-y-auto p-6 space-y-4">
               {messages.map((message) => (
@@ -29,7 +34,7 @@ export default function ChatPage() {
                     className={`max-w-[70%] rounded-lg px-4 py-2 ${
                       message.sender === 'user'
                         ? 'bg-indigo-600 text-white'
-                        : 'bg-gray-100 text-gray-900'
+                        : 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white'
                     }`}
                   >
                     <p className="text-sm">{message.text}</p>
@@ -39,16 +44,16 @@ export default function ChatPage() {
             </div>
 
             {/* Chat Input */}
-            <div className="border-t p-4">
+            <div className="border-t dark:border-gray-700 p-4">
               <form className="flex gap-4">
                 <input
                   type="text"
                   placeholder="Type your message..."
-                  className="flex-1 rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="flex-1 rounded-lg border border-gray-300 dark:border-gray-600 px-4 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400"
                 />
                 <button
                   type="submit"
-                  className="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition-colors"
+                  className="bg-indigo-600 dark:bg-indigo-500 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 dark:hover:bg-indigo-600 transition-colors"
                 >
                   Send
                 </button>

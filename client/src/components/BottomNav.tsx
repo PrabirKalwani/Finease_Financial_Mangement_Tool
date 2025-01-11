@@ -2,15 +2,22 @@
 
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
+import { useTheme } from '@/context/ThemeContext'
 
 export default function BottomNav() {
   const pathname = usePathname()
+  const { isDarkMode } = useTheme()
 
   const isActive = (path: string) => pathname === path
 
   return (
     <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2">
-      <div className="bg-black/80 backdrop-blur-lg rounded-full px-6 py-3 flex items-center gap-8 shadow-lg border border-white/10">
+      <div className={`${
+        isDarkMode 
+          ? 'bg-gray-800/80 border-gray-700/20' 
+          : 'bg-black/80 border-white/10'
+        } backdrop-blur-lg rounded-full px-6 py-3 flex items-center gap-8 shadow-lg border`}
+      >
         <Link 
           href="/home" 
           className={`flex flex-col items-center transition-colors ${
