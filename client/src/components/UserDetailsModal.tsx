@@ -61,7 +61,7 @@ export default function UserDetailsModal({ isOpen, onClose, email }: UserDetails
             try {
               const jsonData = JSON.parse(data)
               errorMessage = jsonData.message || errorMessage
-            } catch (e) {
+            } catch {
               errorMessage = data
             }
           }
