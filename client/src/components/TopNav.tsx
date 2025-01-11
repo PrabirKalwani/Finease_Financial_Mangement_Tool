@@ -1,20 +1,6 @@
 'use client'
 
 import * as React from 'react'
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { Clock, Grid, Moon, Search, User } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import {
-  CommandDialog,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from '@/components/ui/command'
-import { cn } from '@/lib/utils'  // Ensure this utility is defined correctly in your project
-
 
 export function TopNav() {
 

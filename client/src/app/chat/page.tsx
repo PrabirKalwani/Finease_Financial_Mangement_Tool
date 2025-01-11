@@ -1,12 +1,11 @@
 'use client'
 
 import BottomNav from '@/components/BottomNav'
-import { useTheme } from '@/context/ThemeContext'
 import { useState, useEffect } from 'react'
 import { useUser } from '@/context/UserContext'
 
 export default function ChatPage() {
-  const { isDarkMode, email } = useUser()
+  const { email } = useUser()
 
   const [messages, setMessages] = useState([
     { id: 1, text: "Hi! How can I help you today?", sender: "ai" },

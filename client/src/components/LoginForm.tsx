@@ -29,7 +29,7 @@ export default function LoginForm() {
       } else {
         toast.error(result.error || 'Failed to login')
       }
-    } catch (error) {
+    } catch  {
       toast.error('An error occurred')
     } finally {
       setLoading(false)

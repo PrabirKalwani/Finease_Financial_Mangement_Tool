@@ -1,10 +1,8 @@
 'use client'
 
 import BottomNav from '@/components/BottomNav'
-import { useTheme } from '@/context/ThemeContext'
 
 export default function LearnPage() {
-  const { isDarkMode } = useTheme()
   
   const courses = [
     {

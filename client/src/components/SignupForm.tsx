@@ -33,7 +33,7 @@ export default function SignupForm() {
       } else {
         toast.error(result.error || 'Failed to create account')
       }
-    } catch (error) {
+    } catch {
       toast.error('An error occurred')
     } finally {
       setLoading(false)
