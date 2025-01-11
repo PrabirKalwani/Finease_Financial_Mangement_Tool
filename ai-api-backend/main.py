@@ -2,17 +2,19 @@ from flask import Flask, request, jsonify
 import google.generativeai as genai
 from dotenv import load_dotenv
 import os
+from flask_cors import CORS
 
-# Initialize Flask app
+
 app = Flask(__name__)
+CORS(app)  
 
-# Load environment variables from .env file
+
 load_dotenv()
 
-# Retrieve API key from environment variable
+
 api_key = os.getenv("API_KEY")
 
-# Configure Generative AI API
+
 if api_key:
     genai.configure(api_key=api_key)
 else:
@@ -36,16 +38,16 @@ Rules:
 4. ONLY WHERE TO INVEST SHOULD BE IN RESPONSE AND EXPLAIN WHY TO INVEST IN THAT.
 """
 
-# Create generative model
+
 model = genai.GenerativeModel("gemini-1.5-flash")
 
-# Store conversation history
+
 conversation_history = []
 
 @app.route("/generate", methods=["POST"])
 def generate_response():
     try:
-        # Get user input and preferences from request
+        
         data = request.get_json()
         user_input = data.get("user_input", "")
         budget_amt = data.get("budget_amt", 100000)
@@ -55,18 +57,18 @@ def generate_response():
         if not user_input:
             return jsonify({"error": "User input is required."}), 400
 
-        # Generate system prompt with user preferences
+        
         sys_prompt = sys_prompt_template.format(
             budget_amt=budget_amt, budget_type=budget_type, risk_apetite=risk_apetite
         )
 
-        # Update conversation history
+        
         conversation_history.append(f"You: {user_input}")
         
-        # Pass the full prompt (combining history and system instructions) to the model
+        
         prompt = "\n".join(conversation_history) + "\n" + sys_prompt
 
-        # Generate response
+        
         response = model.generate_content(
             prompt,
             generation_config=genai.GenerationConfig(
@@ -75,7 +77,7 @@ def generate_response():
             )
         )
 
-        # Extract AI response
+        
         if hasattr(response, 'text') and response.text:
             ai_response = response.text.strip()
             conversation_history.append(f"AI: {ai_response}")

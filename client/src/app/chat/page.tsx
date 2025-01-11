@@ -2,15 +2,86 @@
 
 import BottomNav from '@/components/BottomNav'
 import { useTheme } from '@/context/ThemeContext'
+import { useState, useEffect } from 'react'
+import { useUser } from '@/context/UserContext'
 
 export default function ChatPage() {
-  const { isDarkMode } = useTheme()
-  
-  const messages = [
+  const { isDarkMode, email } = useUser()
+
+  const [messages, setMessages] = useState([
     { id: 1, text: "Hi! How can I help you today?", sender: "ai" },
-    { id: 2, text: "I need help with Python loops", sender: "user" },
-    { id: 3, text: "I'd be happy to help you understand Python loops. What specific aspect would you like to learn about?", sender: "ai" },
-  ]
+  ])
+  const [userDetails, setUserDetails] = useState(null)
+  const [userInput, setUserInput] = useState('')
+
+  // Fetch user details on initial load
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      if (!email) return;
+      try {
+        const response = await fetch(`http://65.1.209.37:8080/user-details?email=${email}`)
+        if (!response.ok) {
+          throw new Error(`Error fetching user details: ${response.status} ${response.statusText}`);
+        }
+        const data = await response.json()
+        setUserDetails(data)
+      } catch (error) {
+        console.error("Error fetching user details:", error)
+      }
+    }
+    fetchUserDetails()
+  }, [email])
+
+  // Function to send message
+  const sendMessage = async (e) => {
+    e.preventDefault()
+    if (userInput.trim() === "") return
+
+    // Add user message
+    setMessages((prevMessages) => [
+      ...prevMessages,
+      { id: prevMessages.length + 1, text: userInput, sender: 'user' },
+    ])
+
+    if (userDetails) {
+      const { riskAppetite, salary } = userDetails
+      const postData = {
+        user_input: userInput,
+        budget_amt: salary * 3,
+        budget_type: 'low',
+        risk_apetite: riskAppetite || "medium",
+      }
+
+      try {
+        const response = await fetch('http://65.1.209.37:1234/generate', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(postData),
+        })
+
+        if (!response.ok) {
+          throw new Error(`Error sending message: ${response.status} ${response.statusText}`);
+        }
+
+        const data = await response.json()
+
+        // Add AI response
+        setMessages((prevMessages) => [
+          ...prevMessages,
+          { id: prevMessages.length + 2, text: data?.response || "Sorry, I couldn't get a response.", sender: 'ai' },
+        ])
+
+        setUserInput('')
+      } catch (error) {
+        console.error("Error sending message:", error)
+        alert(`Network error: ${error.message}`)
+      }
+    } else {
+      console.error("User details are not available.")
+    }
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -45,11 +116,13 @@ export default function ChatPage() {
 
             {/* Chat Input */}
             <div className="border-t dark:border-gray-700 p-4">
-              <form className="flex gap-4">
+              <form className="flex gap-4" onSubmit={sendMessage}>
                 <input
                   type="text"
                   placeholder="Type your message..."
                   className="flex-1 rounded-lg border border-gray-300 dark:border-gray-600 px-4 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400"
+                  value={userInput}
+                  onChange={(e) => setUserInput(e.target.value)}
                 />
                 <button
                   type="submit"
@@ -66,4 +139,4 @@ export default function ChatPage() {
       <BottomNav />
     </div>
   )
-} 
+}
