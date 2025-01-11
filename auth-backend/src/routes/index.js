@@ -8,6 +8,8 @@ router.post("/api/register", firebaseAuthController.registerUser);
 router.post("/api/login", firebaseAuthController.loginUser);
 router.post("/api/logout", firebaseAuthController.logoutUser);
 router.post("/api/reset-password", firebaseAuthController.resetPassword);
+router.get("/user-details", firebaseAuthController.checkUserDetailsByEmail);
+router.post("/update-user-details", firebaseAuthController.updateUserDetails);
 
 // Protected route example
 router.get("/api/posts", verifyToken, (req, res) => {
