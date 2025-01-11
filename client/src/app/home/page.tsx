@@ -2,7 +2,6 @@
 
 import BottomNav from '@/components/BottomNav'
 import TransactionDashboard from '../../components/TransactionDashboard'
-import { generateMockTransactions } from '@/lib/mockData'
 
 export default function DashboardPage() {
   function getGreeting() {
@@ -28,7 +27,6 @@ export default function DashboardPage() {
   const username = 'User'
   const greeting = getGreeting()
   const currentDate = formatDate(new Date())
-  const transaction = generateMockTransactions()
 
   return (
     <div className="container mx-auto p-4">
@@ -36,7 +34,7 @@ export default function DashboardPage() {
         {greeting}, {username}!
       </h1>
       <p className="text-secondary-foreground mb-6">{currentDate}</p>
-      <TransactionDashboard transactions={transaction}/>
+      <TransactionDashboard/>
       <BottomNav />
     </div>
   )
