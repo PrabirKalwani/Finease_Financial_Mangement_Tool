@@ -7,6 +7,11 @@ const {
   sendPasswordResetEmail,
 } = require("../config/firebase");
 
+// Firestore imports
+const { getFirestore, doc, setDoc, updateDoc } = require("firebase/firestore");
+const auth = getAuth();
+const db = getFirestore();
+
 class FirebaseAuthController {
   async registerUser(req, res) {
     const { email, password } = req.body;
