@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import ChatBotPage from '@/components/ChatBotPage'; // Assuming ChatPage is in the same folder
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 export default function LearnPage() {
   const { isDarkMode } = useTheme();
