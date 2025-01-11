@@ -8,7 +8,7 @@ const {
 } = require("../config/firebase");
 
 // Firestore imports
-const { getFirestore, doc, setDoc, updateDoc } = require("firebase/firestore");
+const { getFirestore, doc, setDoc, collection } = require("firebase/firestore");
 const auth = getAuth();
 const db = getFirestore();
 
@@ -23,6 +23,7 @@ class FirebaseAuthController {
     }
 
     try {
+      // Create user with email and password
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         email,
@@ -32,6 +33,36 @@ class FirebaseAuthController {
 
       // Send email verification
       await sendEmailVerification(auth.currentUser);
+
+      // Add user to Firestore with the specified structure
+      const userRef = doc(collection(db, "users"), user.uid);
+      await setDoc(userRef, {
+        accountNumber: 0,
+        uid: user.uid,
+        email: user.email,
+        salary: 0,
+        riskAppetite: "low",
+      });
+
+      // Create sub-collections: `Transaction` and `Simtrade`
+      const transactionsRef = collection(userRef, "Transaction");
+      const simtradeRef = collection(userRef, "Simtrade");
+
+      // Initialize documents in `Transaction` sub-collection
+      await setDoc(doc(transactionsRef), {
+        amount: 0,
+        secondAccount: "",
+        transactionId: "",
+        type: "",
+        timestamp: new Date().toISOString(),
+      });
+
+      // Initialize documents in `Simtrade` sub-collection
+      await setDoc(doc(simtradeRef), {
+        buy: 0,
+        sell: 0,
+        tickevalue: 0,
+      });
 
       res.status(201).json({
         message: "Verification email sent! User created successfully!",
@@ -44,7 +75,6 @@ class FirebaseAuthController {
     }
   }
 
-  // Login user and update online status
   async loginUser(req, res) {
     const { email, password } = req.body;
     if (!email || !password) {
@@ -81,7 +111,7 @@ class FirebaseAuthController {
     }
   }
 
-  // Logout user and update online status
+  // Logout and other methods remain unchanged
   async logoutUser(req, res) {
     try {
       const user = auth.currentUser;
@@ -100,7 +130,6 @@ class FirebaseAuthController {
     }
   }
 
-  // Reset password
   async resetPassword(req, res) {
     const { email } = req.body;
     if (!email) {
