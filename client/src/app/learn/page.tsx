@@ -1,16 +1,12 @@
 'use client';
 
 import BottomNav from '@/components/BottomNav';
-import { useTheme } from '@/context/ThemeContext';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import ChatBotPage from '@/components/ChatBotPage'; // Assuming ChatPage is in the same folder
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 export default function LearnPage() {
-  const { isDarkMode } = useTheme();
-  const router = useRouter();
   const [showChatModal, setShowChatModal] = useState(false);
   const [chatModalType, setChatModalType] = useState("");
   const [chatModalDesc, setChatModalDesc] = useState("");

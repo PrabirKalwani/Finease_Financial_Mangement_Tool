@@ -8,7 +8,6 @@ import {
   Legend,
 } from "recharts";
 import {
-  ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
