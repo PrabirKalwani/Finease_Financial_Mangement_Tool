@@ -94,4 +94,4 @@ def reset_conversation():
     return jsonify({"message": "Conversation history reset."})
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True ,port=1234,host="0.0.0.0")
