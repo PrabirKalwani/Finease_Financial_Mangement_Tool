@@ -9,6 +9,7 @@ export default function ChatBotPage({ title, desc }: { title: string, desc: stri
   const [userInput, setUserInput] = useState('')
   const [userDetails, setUserDetails] = useState<any>(null)
 
+  
   // Fetch user details
   useEffect(() => {
     const fetchUserDetails = async () => {
