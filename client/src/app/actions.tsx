@@ -25,6 +25,14 @@ export async function login(email: string, password: string) {
         sameSite: 'strict',
         maxAge: 60 * 60 * 24 * 7 // 1 week
       })
+      cookieStore.set({
+        name: 'userEmail',
+        value: email,
+        httpOnly: false, // Allow client-side access
+        secure: true,
+        sameSite: 'strict',
+        maxAge: 60 * 60 * 24 * 7 // 1 week
+      })
       return { success: true }
     } else {
       return { success: false, error: 'Invalid email or password' }

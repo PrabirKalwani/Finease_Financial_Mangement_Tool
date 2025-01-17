@@ -25,7 +25,6 @@ export default function PortfolioPage() {
     reader.onload = (e) => {
       const text = e.target?.result as string
       const lines = text.split('\n')
-      const headers = lines[0].split(',')
       
       const parsedAssets: PortfolioAsset[] = lines
         .slice(1) // Skip header row

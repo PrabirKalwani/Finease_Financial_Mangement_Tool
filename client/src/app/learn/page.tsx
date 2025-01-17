@@ -2,18 +2,16 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import ChatBotPage from '@/components/ChatBotPage'
+import TopicChat from '@/components/TopicChat'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 
 export default function LearnPage() {
   const [showChatModal, setShowChatModal] = useState(false)
-  const [chatModalType, setChatModalType] = useState("")
-  const [chatModalDesc, setChatModalDesc] = useState("")
+  const [selectedTopic, setSelectedTopic] = useState<{ title: string; description: string } | null>(null)
 
-  function chatModalCheck(title: string, desc: string) {
+  function openTopicChat(title: string, description: string) {
+    setSelectedTopic({ title, description })
     setShowChatModal(true)
-    setChatModalType(title)
-    setChatModalDesc(desc)
   }
 
   const courses = [
@@ -70,7 +68,7 @@ export default function LearnPage() {
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  onClick={() => chatModalCheck(course.title, course.description)}
+                  onClick={() => openTopicChat(course.title, course.description)}
                   className="mt-4 w-full bg-primary text-primary-foreground py-2 px-4 rounded-md hover:bg-primary/90 transition-colors"
                 >
                   Learn More
@@ -85,11 +83,14 @@ export default function LearnPage() {
       <Dialog open={showChatModal} onOpenChange={setShowChatModal}>
         <DialogContent className="max-w-4xl">
           <DialogHeader>
-            <DialogTitle>Learn about {chatModalType}</DialogTitle>
+            <DialogTitle>Learn about {selectedTopic?.title}</DialogTitle>
           </DialogHeader>
-          <div className="py-4">
-            <ChatBotPage title={chatModalType} desc={chatModalDesc} />
-          </div>
+          {selectedTopic && (
+            <TopicChat 
+              title={selectedTopic.title} 
+              description={selectedTopic.description} 
+            />
+          )}
         </DialogContent>
       </Dialog>
     </main>

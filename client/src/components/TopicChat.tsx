@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card } from '@/components/ui/card'
@@ -12,6 +12,11 @@ interface Message {
   content: string
 }
 
+interface TopicChatProps {
+  title: string
+  description: string
+}
+
 const generationConfig = {
   temperature: 0.9,
   topP: 0.95,
@@ -19,27 +24,36 @@ const generationConfig = {
   maxOutputTokens: 2048,
 }
 
-// Initialize the model outside the component
-const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY!)
-const model = genAI.getGenerativeModel({ model: "gemini-pro" })
-
-// Create a chat session with the finance-focused context
-const createChatSession = () => {
-  return model.startChat({
-    generationConfig,
-    history: [],
-  })
-}
-
-export default function ChatPage() {
+export default function TopicChat({ title, description }: TopicChatProps) {
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
-  const [chatSession] = useState(() => createChatSession())
+  const [chatSession, setChatSession] = useState<any>(null)
+
+  useEffect(() => {
+    // Initialize Gemini API on the client side
+    const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY!)
+    const model = genAI.getGenerativeModel({ model: "gemini-pro" })
+    
+    const session = model.startChat({
+      generationConfig,
+      history: [],
+    })
+
+    // Set initial context
+    session.sendMessage([{
+      text: `You are a finance education assistant focused on teaching about ${title}. 
+      Here's the context: ${description}
+      Keep your responses concise, easy to understand, and focused on ${title}.
+      If asked about other topics, politely redirect to ${title}-related aspects.`
+    }])
+
+    setChatSession(session)
+  }, [title, description])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!input.trim() || loading) return
+    if (!input.trim() || loading || !chatSession) return
 
     const userMessage = input.trim()
     setInput('')
@@ -49,11 +63,6 @@ export default function ChatPage() {
     setMessages(prev => [...prev, { role: 'user', content: userMessage }])
 
     try {
-      // First message should set the context
-      if (messages.length === 0) {
-        await chatSession.sendMessage([{ text: "You are a bot that helps me understand finance. Keep your responses concise and easy to understand." }])
-      }
-
       const result = await chatSession.sendMessage([{ text: userMessage }])
       const response = await result.response
       const text = response.text()
@@ -72,14 +81,12 @@ export default function ChatPage() {
   }
 
   return (
-    <main className="container mx-auto p-4 max-w-4xl min-h-screen">
-      <h1 className="text-3xl font-bold mb-8">Finance Assistant</h1>
-      
-      <div className="space-y-8 mb-8 h-[calc(100vh-300px)] overflow-y-auto">
+    <div className="flex flex-col h-[60vh]">
+      <div className="flex-1 space-y-4 overflow-y-auto mb-4 p-4">
         {messages.length === 0 && (
           <div className="text-center text-muted-foreground">
-            <p>👋 Hi! I&apos;m your finance assistant.</p>
-            <p>Ask me anything about finance, investments, or money management!</p>
+            <p>👋 Hi! I&apos;m your {title} expert.</p>
+            <p>Ask me anything about {title}!</p>
           </div>
         )}
         
@@ -105,18 +112,18 @@ export default function ChatPage() {
         )}
       </div>
 
-      <form onSubmit={handleSubmit} className="flex gap-4 sticky bottom-4 bg-background p-4 border-t">
+      <form onSubmit={handleSubmit} className="flex gap-4 p-4 border-t">
         <Input
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="Ask me anything about finance..."
+          placeholder={`Ask about ${title}...`}
           className="flex-1"
-          disabled={loading}
+          disabled={loading || !chatSession}
         />
-        <Button type="submit" disabled={loading}>
+        <Button type="submit" disabled={loading || !chatSession}>
           Send
         </Button>
       </form>
-    </main>
+    </div>
   )
-}
+} 

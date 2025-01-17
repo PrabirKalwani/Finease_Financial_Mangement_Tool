@@ -1,9 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useWatch, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -17,11 +16,10 @@ import { Input } from "@/components/ui/input";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { calculateTax } from "@/lib/functions"; // Adjust the path based on your folder structure
+import { calculateTax } from "@/lib/functions";
 import TaxResultComponent from "@/components/TaxResultComponent";
 import { RegimeTaxResult } from "@/lib/types";
 
@@ -156,7 +154,7 @@ export default function TaxCalculatorForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 px-4">
+      <form onSubmit={(e) => e.preventDefault()} className="space-y-8 px-4">
         <div className="grid grid-cols-2 gap-4">
           <div className="flex flex-col gap-4">
             <Card className="col-span-1">
@@ -393,7 +391,7 @@ export default function TaxCalculatorForm() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>
-                        Employee's Contribution to NPS - 80CCD
+                        Employees Contribution to NPS - 80CCD
                       </FormLabel>
                       <FormControl>
                         <Input placeholder="Enter amount" {...field} />

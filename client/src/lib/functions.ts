@@ -48,12 +48,12 @@ export const calculateTax = (
   // Determine the rebate eligibility
   const rebateLimit = regime === "old" ? yearData.old_rebate_limit : yearData.new_rebate_limit;
   const rebateAmount = regime === "old" ? yearData.old_rebate : yearData.new_rebate;
-  let rebate = taxableIncome <= rebateLimit ? rebateAmount : 0;
+  const rebate = taxableIncome <= rebateLimit ? rebateAmount : 0;
 
   // Calculate tax based on regime and income slabs
   const taxSlabs = regime === "old" ? yearData.old : yearData.new;
   let tax = 0;
-  let remainingIncome = taxableIncome;
+  const remainingIncome = taxableIncome;
 
   for (const slab of taxSlabs) {
     if (remainingIncome > slab.start) {

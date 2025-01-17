@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { useUser } from '@/context/UserContext'
 import OnboardingModal from '@/components/OnboardingModal'
@@ -16,14 +16,14 @@ import {
   Brain
 } from 'lucide-react'
 
-export default function DashboardPage() {
+function DashboardContent() {
   const [showOnboarding, setShowOnboarding] = useState(false)
   const searchParams = useSearchParams()
-  const { email } = useUser()
   const router = useRouter()
+  const { email } = useUser()
 
   useEffect(() => {
-    if (searchParams.get('showOnboarding') === 'true') {
+    if (searchParams?.get('showOnboarding') === 'true') {
       setShowOnboarding(true)
     }
   }, [searchParams])
@@ -185,5 +185,13 @@ export default function DashboardPage() {
         />
       )}
     </main>
+  )
+}
+
+export default function DashboardPage() {
+  return (
+    <Suspense fallback={<div className="container mx-auto p-4">Loading...</div>}>
+      <DashboardContent />
+    </Suspense>
   )
 } 

@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useUser } from '@/context/UserContext'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Loader2 } from 'lucide-react'
 import toast from 'react-hot-toast'
@@ -15,7 +14,19 @@ interface UserDetails {
 export default function ProfilePage() {
   const [loading, setLoading] = useState(true)
   const [userDetails, setUserDetails] = useState<UserDetails | null>(null)
-  const { email } = useUser()
+  const [email, setEmail] = useState<string | null>(null)
+
+  useEffect(() => {
+    // Get email from cookie
+    const userEmail = document.cookie
+      .split('; ')
+      .find(row => row.startsWith('userEmail='))
+      ?.split('=')[1]
+    
+    if (userEmail) {
+      setEmail(decodeURIComponent(userEmail))
+    }
+  }, [])
 
   useEffect(() => {
     async function fetchUserDetails() {

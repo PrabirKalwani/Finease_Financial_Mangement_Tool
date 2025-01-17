@@ -27,7 +27,7 @@ export default function LoginForm() {
       } else {
         toast.error(result.error || 'Login failed')
       }
-    } catch (error) {
+    } catch {
       toast.error('An unexpected error occurred')
     } finally {
       setLoading(false)
