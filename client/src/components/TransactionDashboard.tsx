@@ -22,7 +22,6 @@ export default function TransactionDashboard() {
     reader.onload = (e) => {
       const text = e.target?.result as string
       const lines = text.split('\n')
-      const headers = lines[0].split(',')
       
       const parsedTransactions: Transaction[] = lines
         .slice(1) // Skip header row
