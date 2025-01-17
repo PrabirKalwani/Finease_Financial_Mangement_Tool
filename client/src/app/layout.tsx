@@ -3,14 +3,15 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { UserProvider } from "@/context/UserContext";
+import { CurrencyProvider } from "@/context/CurrencyContext";
 import { Toaster } from "react-hot-toast";
 import Navbar from "@/components/Navbar";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "ACE - Your Financial Assistant",
-  description: "Track transactions, manage portfolio, and get AI-powered financial advice",
+  title: "FinEase - Your Financial Assistant",
+  description: "Manage your finances with ease",
 };
 
 export default function RootLayout({
@@ -28,9 +29,11 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <UserProvider>
-            <Navbar />
-            {children}
-            <Toaster position="top-right" />
+            <CurrencyProvider>
+              <Navbar />
+              {children}
+              <Toaster />
+            </CurrencyProvider>
           </UserProvider>
         </ThemeProvider>
       </body>

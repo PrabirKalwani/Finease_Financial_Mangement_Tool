@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "ACE - Authentication",
+  title: "FinEase - Authentication",
   description: "Sign in or create an account",
 }
 

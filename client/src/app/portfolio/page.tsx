@@ -15,6 +15,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { GoogleGenerativeAI } from '@google/generative-ai'
+import { useCurrency } from '@/context/CurrencyContext'
 
 interface Message {
   role: 'user' | 'assistant'
@@ -87,6 +88,7 @@ export default function PortfolioPage() {
   const [loading, setLoading] = useState(false)
   const [marketMood, setMarketMood] = useState<string>('neutral')
   const [chatSession] = useState(() => createChatSession())
+  const { formatAmount } = useCurrency()
 
   useEffect(() => {
     const fetchMarketMood = async () => {
@@ -310,7 +312,7 @@ Rules:
               <CardTitle className="text-sm font-medium">Total Investment</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">₹{calculateTotalInvestment().toLocaleString()}</div>
+              <div className="text-2xl font-bold">{formatAmount(calculateTotalInvestment())}</div>
             </CardContent>
           </Card>
 
@@ -319,7 +321,7 @@ Rules:
               <CardTitle className="text-sm font-medium">Current Value</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">₹{calculateCurrentValue().toLocaleString()}</div>
+              <div className="text-2xl font-bold">{formatAmount(calculateCurrentValue())}</div>
             </CardContent>
           </Card>
 
@@ -375,9 +377,9 @@ Rules:
                         <TableRow key={asset.id}>
                           <TableCell>{stockAsset.ticker}</TableCell>
                           <TableCell>{stockAsset.quantity}</TableCell>
-                          <TableCell>₹{stockAsset.purchasePrice.toLocaleString()}</TableCell>
-                          <TableCell>₹{stockAsset.currentPrice.toLocaleString()}</TableCell>
-                          <TableCell>₹{totalValue.toLocaleString()}</TableCell>
+                          <TableCell>{formatAmount(stockAsset.purchasePrice)}</TableCell>
+                          <TableCell>{formatAmount(stockAsset.currentPrice)}</TableCell>
+                          <TableCell>{formatAmount(totalValue)}</TableCell>
                           <TableCell className={returnPercentage >= 0 ? 'text-green-600' : 'text-red-600'}>
                             {returnPercentage.toFixed(2)}%
                           </TableCell>
@@ -418,9 +420,9 @@ Rules:
                         <TableRow key={asset.id}>
                           <TableCell className="capitalize">{commodityAsset.name}</TableCell>
                           <TableCell>{commodityAsset.quantity}</TableCell>
-                          <TableCell>₹{commodityAsset.purchasePrice.toLocaleString()}</TableCell>
-                          <TableCell>₹{commodityAsset.currentPrice.toLocaleString()}</TableCell>
-                          <TableCell>₹{totalValue.toLocaleString()}</TableCell>
+                          <TableCell>{formatAmount(commodityAsset.purchasePrice)}</TableCell>
+                          <TableCell>{formatAmount(commodityAsset.currentPrice)}</TableCell>
+                          <TableCell>{formatAmount(totalValue)}</TableCell>
                           <TableCell className={returnPercentage >= 0 ? 'text-green-600' : 'text-red-600'}>
                             {returnPercentage.toFixed(2)}%
                           </TableCell>
