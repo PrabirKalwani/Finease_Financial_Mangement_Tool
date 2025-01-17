@@ -43,35 +43,17 @@ class FirebaseAuthController {
       // Send email verification
       await sendEmailVerification(auth.currentUser);
 
-      // Add user to Firestore with the specified structure
-      const userRef = doc(collection(db, "users"), user.uid);
+      // Add user to Users collection with the specified structure
+      const userRef = doc(collection(db, "Users"), user.uid);
       await setDoc(userRef, {
-        accountNumber: 0,
-        uid: user.uid,
         email: user.email,
-        salary: 0,
-        riskAppetite: "low",
+        experience: null,
+        investingquota: null,
+        riskApettite: null,
       });
 
-      // Create sub-collections: `Transaction` and `Simtrade`
-      const transactionsRef = collection(userRef, "Transaction");
-      const simtradeRef = collection(userRef, "Simtrade");
-
-      // Initialize documents in `Transaction` sub-collection
-      await setDoc(doc(transactionsRef), {
-        amount: 0,
-        secondAccount: "",
-        transactionId: "",
-        type: "",
-        timestamp: new Date().toISOString(),
-      });
-
-      // Initialize documents in `Simtrade` sub-collection
-      await setDoc(doc(simtradeRef), {
-        buy: 0,
-        sell: 0,
-        tickevalue: 0,
-      });
+      // Create investments subcollection
+      const investmentsRef = collection(userRef, "investments");
 
       res.status(201).json({
         message: "Verification email sent! User created successfully!",
@@ -160,33 +142,32 @@ class FirebaseAuthController {
 
   async checkUserDetailsByEmail(req, res) {
     try {
-      // Retrieve email from request
-      const { email } = req.query; // Pass email as a query parameter
+      const { email } = req.query;
       if (!email) {
         return res.status(400).json({ error: "Email is required" });
       }
 
-      // Query Firestore for the user document based on email
-      const usersCollection = collection(db, "users");
-      const emailQuery = query(usersCollection, where("email", "==", email));
+      // Query Users collection for the user document based on email
+      const UsersCollection = collection(db, "Users");
+      const emailQuery = query(UsersCollection, where("email", "==", email));
       const querySnapshot = await getDocs(emailQuery);
 
       if (querySnapshot.empty) {
         return res.status(404).json({ error: "User not found" });
       }
 
-      // Assume email is unique, so fetch the first result
+      // Get the user data
       const userDoc = querySnapshot.docs[0];
       const userData = userDoc.data();
 
       // Extract required details
-      const { accountNumber, riskAppetite, salary } = userData;
+      const { experience, investingquota, riskApettite } = userData;
 
       // Construct response
       const response = {
-        accountNumber,
-        riskAppetite,
-        salary,
+        experience,
+        investingquota,
+        riskApettite,
         status: "Details retrieved successfully",
       };
 
@@ -201,32 +182,31 @@ class FirebaseAuthController {
 
   async updateUserDetails(req, res) {
     try {
-      // Retrieve email and new values from request body
-      const { email, accountNumber, riskAppetite, salary } = req.body;
+      const { email, experience, investingquota, riskApettite } = req.body;
 
       if (!email) {
         return res.status(400).json({ error: "Email is required" });
       }
 
-      // Query Firestore for the user document based on email
-      const usersCollection = collection(db, "users");
-      const emailQuery = query(usersCollection, where("email", "==", email));
+      // Query Users collection for the user document based on email
+      const UsersCollection = collection(db, "Users");
+      const emailQuery = query(UsersCollection, where("email", "==", email));
       const querySnapshot = await getDocs(emailQuery);
 
       if (querySnapshot.empty) {
         return res.status(404).json({ error: "User not found" });
       }
 
-      // Assume email is unique, so fetch the first result
+      // Get user reference
       const userDoc = querySnapshot.docs[0];
       const userRef = userDoc.ref;
 
       // Prepare updated data
       const updatedData = {};
-      if (accountNumber !== undefined)
-        updatedData.accountNumber = accountNumber;
-      if (riskAppetite !== undefined) updatedData.riskAppetite = riskAppetite;
-      if (salary !== undefined) updatedData.salary = salary;
+      if (experience !== undefined) updatedData.experience = experience;
+      if (investingquota !== undefined)
+        updatedData.investingquota = investingquota;
+      if (riskApettite !== undefined) updatedData.riskApettite = riskApettite;
 
       // Update the document in Firestore
       await updateDoc(userRef, updatedData);
