@@ -155,7 +155,7 @@ export default function TaxCalculatorForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={(e) => e.preventDefault()} className="space-y-8 px-4">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 px-4">
         <div className="grid grid-cols-2 gap-4">
           <div className="flex flex-col gap-4">
             <Card className="col-span-1">

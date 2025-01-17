@@ -1,7 +1,13 @@
-import Link from 'next/link'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { ArrowRight, Leaf, Coins, PiggyBank, TrendingUp } from 'lucide-react'
+import Link from "next/link";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { ArrowRight, Leaf, Coins, PiggyBank, TrendingUp } from "lucide-react";
 
 const Tax = () => {
   return (
@@ -24,9 +30,17 @@ const Tax = () => {
                   View and manage your income tax details
                 </CardDescription>
               </CardHeader>
-              <CardContent className="flex justify-between items-center">
-                <span>Click to view details</span>
-                <ArrowRight />
+              <CardContent className="flex flex-col">
+                <ul className="list-disc pl-5 mb-4">
+                  <li>Maximize contributions to tax-advantaged accounts</li>
+                  <li>Consider tax-efficient investment vehicles</li>
+                  <li>Explore charitable giving strategies</li>
+                  <li>Review timing of income and deductions</li>
+                </ul>
+                <div className="flex justify-between items-center">
+                  <span>Click to view details</span>
+                  <ArrowRight />
+                </div>
               </CardContent>
             </Card>
           </Link>
@@ -35,7 +49,7 @@ const Tax = () => {
             <CardHeader>
               <CardTitle className="flex items-center">
                 <TrendingUp className="mr-2" />
-                Tax on Equity
+                Portfolio Tax
               </CardTitle>
               <CardDescription>
                 Quick overview of tax harvesting opportunities
@@ -48,50 +62,9 @@ const Tax = () => {
                 <li>Review long-term vs short-term capital gains</li>
                 <li>Explore tax-loss harvesting strategies</li>
               </ul>
-              <Button variant="outline">Analyze Portfolio</Button>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <Coins className="mr-2" />
-                Tax on Debt
-              </CardTitle>
-              <CardDescription>
-                Overview of your debt-related taxes
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p>Key points to consider:</p>
-              <ul className="list-disc pl-5 mt-2">
-                <li>Review interest deductions on mortgages and loans</li>
-                <li>Understand tax implications of debt consolidation</li>
-                <li>
-                  Explore strategies to minimize taxes on debt investments
-                </li>
-              </ul>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <Leaf className="mr-2" />
-                Tax Optimization Strategies
-              </CardTitle>
-              <CardDescription>
-                Discover ways to optimize your tax situation
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ul className="list-disc pl-5 mb-4">
-                <li>Maximize contributions to tax-advantaged accounts</li>
-                <li>Consider tax-efficient investment vehicles</li>
-                <li>Explore charitable giving strategies</li>
-                <li>Review timing of income and deductions</li>
-              </ul>
-              <Button variant="outline">Get Personalized Advice</Button>
+              <Link href="/tax/stock-tax" passHref>
+                <Button variant="outline">Analyze Portfolio</Button>
+              </Link>
             </CardContent>
           </Card>
         </div>

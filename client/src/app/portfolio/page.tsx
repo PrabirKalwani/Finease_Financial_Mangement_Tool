@@ -1,9 +1,9 @@
 'use client'
 
-import { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { PortfolioAsset } from '@/lib/types'
+import { useAssets } from '@/context/AssetsContext';
 import { Upload } from 'lucide-react'
 import {
   Table,
@@ -15,7 +15,8 @@ import {
 } from "@/components/ui/table"
 
 export default function PortfolioPage() {
-  const [assets, setAssets] = useState<PortfolioAsset[]>([])
+  const { assets, setAssets } = useAssets();
+  // const [assets, setAssets] = useState<PortfolioAsset[]>([])
 
   const handleStockFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]

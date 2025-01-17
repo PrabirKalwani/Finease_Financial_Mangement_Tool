@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { UserProvider } from "@/context/UserContext";
+import { AssetsProvider } from '@/context/AssetsContext';
 import { Toaster } from "react-hot-toast";
 import Navbar from "@/components/Navbar";
 
@@ -28,9 +29,11 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <UserProvider>
-            <Navbar />
-            {children}
-            <Toaster position="top-right" />
+            <AssetsProvider>
+              <Navbar />
+              {children}
+              <Toaster position="top-right" />
+            </AssetsProvider>
           </UserProvider>
         </ThemeProvider>
       </body>
