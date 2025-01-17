@@ -74,7 +74,7 @@ export default function TaxCalculatorForm() {
       deductionOther: "",
     },
   });
-
+  
   const [taxResult, setTaxResult] = useState<RegimeTaxResult>({
     old: {
       totalIncome: 0,
@@ -101,39 +101,32 @@ export default function TaxCalculatorForm() {
   });
 
   const onSubmit = (data: TaxFormValues) => {
-    // Extract income and exemptions values from the form data
-  };
-
-  const fields = form.watch();
-
-  useEffect(() => {
     const incomeData = {
-      incomeSalary: fields.incomeSalary,
-      incomeInterest: fields.incomeInterest || "0",
-      incomeOtherSources: fields.incomeOtherSources || "0",
+      incomeSalary: data.incomeSalary || "0",
+      incomeInterest: data.incomeInterest || "0",
+      incomeOtherSources: data.incomeOtherSources || "0",
       exemptions: {
-        hra: fields.exemptions.hra || "0",
-        lta: fields.exemptions.lta || "0",
-        food: fields.exemptions.food || "0",
-        other: fields.exemptions.other || "0",
+        hra: data.exemptions.hra || "0",
+        lta: data.exemptions.lta || "0",
+        food: data.exemptions.food || "0",
+        other: data.exemptions.other || "0",
       },
     };
-
+  
     const deductionsData = {
-      deduction80C: fields.deduction80C || "0",
-      deduction80D: fields.deduction80D || "0",
-      deduction80E: fields.deduction80E || "0",
-      deduction80G: fields.deduction80G || "0",
-      deduction80TTA: fields.deduction80TTA || "0",
-      deduction80CCD: fields.deduction80CCD || "0",
-      deduction80EEA: fields.deduction80EEA || "0",
-      deductionOther: fields.deductionOther || "0",
+      deduction80C: data.deduction80C || "0",
+      deduction80D: data.deduction80D || "0",
+      deduction80E: data.deduction80E || "0",
+      deduction80G: data.deduction80G || "0",
+      deduction80TTA: data.deduction80TTA || "0",
+      deduction80CCD: data.deduction80CCD || "0",
+      deduction80EEA: data.deduction80EEA || "0",
+      deductionOther: data.deductionOther || "0",
     };
-
-    // Define the year data (this should be fetched or hardcoded)
+  
     const yearData = {
-      old_sd: 50000, // Example value for old regime standard deduction
-      new_sd: 75000, // Example value for new regime standard deduction
+      old_sd: 50000,
+      new_sd: 75000,
       old_rebate_limit: 500000,
       new_rebate_limit: 700000,
       old_rebate: 12500,
@@ -154,14 +147,12 @@ export default function TaxCalculatorForm() {
         { start: 1500001, end: Infinity, percent: 30 },
       ],
     };
-
-    // Choose the tax regime: 'old' or 'new'
-    // const regime: "old" | "new" = "new";
+  
     const oldResult = calculateTax(incomeData, deductionsData, "old", yearData);
     const newResult = calculateTax(incomeData, deductionsData, "new", yearData);
-    const result = { old: oldResult, new: newResult };
-    setTaxResult(result);
-  }, [fields]);
+  
+    setTaxResult({ old: oldResult, new: newResult });
+  };
 
   return (
     <Form {...form}>
@@ -308,7 +299,7 @@ export default function TaxCalculatorForm() {
             <CardHeader>
               <CardTitle className="text-2xl">Deductions</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="flex flex-col gap-4">
               <div className="grid grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
@@ -451,6 +442,7 @@ export default function TaxCalculatorForm() {
                   )}
                 />
               </div>
+              <Button type="submit">Calculate Tax</Button>
             </CardContent>
           </Card>
           <div className="col-span-2">
