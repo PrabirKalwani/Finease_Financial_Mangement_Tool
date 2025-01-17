@@ -6,6 +6,7 @@ import {
   PieChart,
   ResponsiveContainer,
   Legend,
+  Tooltip,
 } from "recharts";
 import {
   ChartContainer,
@@ -14,11 +15,26 @@ import {
 } from "@/components/ui/chart";
 import { Transaction } from "@/lib/types";
 
+interface TransactionPieChartProps {
+  transactions: Transaction[];
+  formatAmount: (amount: number) => string;
+}
+
+const COLORS = [
+  "#3b82f6", // blue
+  "#22c55e", // green
+  "#f59e0b", // yellow
+  "#ef4444", // red
+  "#8b5cf6", // purple
+  "#ec4899", // pink
+  "#14b8a6", // teal
+  "#f97316", // orange
+];
+
 export default function TransactionPieChart({
   transactions,
-}: {
-  transactions: Transaction[];
-}) {
+  formatAmount,
+}: TransactionPieChartProps) {
   const data = transactions.reduce((acc, transaction) => {
     const existingCategory = acc.find(
       (item) => item.name === transaction.category
@@ -31,7 +47,7 @@ export default function TransactionPieChart({
     return acc;
   }, [] as { name: string; value: number }[]);
 
-  const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884D8"];
+  data.sort((a, b) => b.value - a.value);
 
   return (
     <ChartContainer
@@ -57,6 +73,7 @@ export default function TransactionPieChart({
             innerRadius={50}
             dataKey="value"
             strokeWidth={5}
+            label={(entry) => `${entry.name} (${formatAmount(entry.value)})`}
           >
             {data.map((entry, index) => (
               <Cell
@@ -65,6 +82,7 @@ export default function TransactionPieChart({
               />
             ))}
           </Pie>
+          <Tooltip formatter={(value: number) => formatAmount(value)} />
           <Legend
             verticalAlign="bottom"
             align="center"

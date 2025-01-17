@@ -50,7 +50,7 @@ export default function SignupPage() {
         className="w-full max-w-md"
       >
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-foreground">ACE</h1>
+          <h1 className="text-4xl font-bold text-foreground">FinEase</h1>
           <p className="text-muted-foreground mt-2">Create your account</p>
         </div>
 

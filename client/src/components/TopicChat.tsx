@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input'
 import { Card } from '@/components/ui/card'
 import { Loader2 } from 'lucide-react'
 import { GoogleGenerativeAI } from '@google/generative-ai'
+import ReactMarkdown from 'react-markdown'
 
 interface Message {
   role: 'user' | 'assistant'
@@ -98,7 +99,9 @@ export default function TopicChat({ title, description }: TopicChatProps) {
             <Card className={`p-4 max-w-[80%] ${
               message.role === 'user' ? 'bg-primary text-primary-foreground' : 'bg-muted'
             }`}>
-              <p className="whitespace-pre-wrap">{message.content}</p>
+              <ReactMarkdown className="whitespace-pre-wrap prose dark:prose-invert max-w-none">
+                {message.content}
+              </ReactMarkdown>
             </Card>
           </div>
         ))}

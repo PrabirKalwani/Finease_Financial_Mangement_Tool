@@ -10,9 +10,11 @@ import TransactionSummary from '@/components/TransactionSummary'
 import { generateMockTransactions } from '@/lib/mockData'
 import { Button } from '@/components/ui/button'
 import { Transaction } from '@/lib/types'
+import { useCurrency } from '@/context/CurrencyContext'
 
 export default function TransactionDashboard() {
   const [transactions, setTransactions] = useState<Transaction[]>(generateMockTransactions())
+  const { formatAmount } = useCurrency()
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
@@ -68,7 +70,7 @@ export default function TransactionDashboard() {
         </div>
       </div>
 
-      <TransactionSummary transactions={transactions} />
+      <TransactionSummary transactions={transactions} formatAmount={formatAmount} />
 
       {/* Tabs for medium screens */}
       <div className="md:hidden">
@@ -84,7 +86,7 @@ export default function TransactionDashboard() {
                 <CardTitle>Credit vs Debit Transactions</CardTitle>
               </CardHeader>
               <CardContent className="pt-2">
-                <TransactionBarChart transactions={transactions} />
+                <TransactionBarChart transactions={transactions} formatAmount={formatAmount} />
               </CardContent>
             </Card>
           </TabsContent>
@@ -94,7 +96,7 @@ export default function TransactionDashboard() {
                 <CardTitle>Transaction Trends</CardTitle>
               </CardHeader>
               <CardContent className="pt-2">
-                <TransactionLineChart transactions={transactions} />
+                <TransactionLineChart transactions={transactions} formatAmount={formatAmount} />
               </CardContent>
             </Card>
           </TabsContent>
@@ -104,7 +106,7 @@ export default function TransactionDashboard() {
                 <CardTitle>Transaction Categories</CardTitle>
               </CardHeader>
               <CardContent className="pt-2">
-                <TransactionPieChart transactions={transactions} />
+                <TransactionPieChart transactions={transactions} formatAmount={formatAmount} />
               </CardContent>
             </Card>
           </TabsContent>
@@ -118,7 +120,7 @@ export default function TransactionDashboard() {
             <CardTitle>Credit vs Debit Transactions</CardTitle>
           </CardHeader>
           <CardContent className="pt-2">
-            <TransactionBarChart transactions={transactions} />
+            <TransactionBarChart transactions={transactions} formatAmount={formatAmount} />
           </CardContent>
         </Card>
         <Card className="">
@@ -126,7 +128,7 @@ export default function TransactionDashboard() {
             <CardTitle>Transaction Trends</CardTitle>
           </CardHeader>
           <CardContent className="pt-2">
-            <TransactionLineChart transactions={transactions} />
+            <TransactionLineChart transactions={transactions} formatAmount={formatAmount} />
           </CardContent>
         </Card>
         <Card className="overflow-hidden">
@@ -134,7 +136,7 @@ export default function TransactionDashboard() {
             <CardTitle>Transaction Categories</CardTitle>
           </CardHeader>
           <CardContent className="pt-2">
-            <TransactionPieChart transactions={transactions} />
+            <TransactionPieChart transactions={transactions} formatAmount={formatAmount} />
           </CardContent>
         </Card>
       </div>
