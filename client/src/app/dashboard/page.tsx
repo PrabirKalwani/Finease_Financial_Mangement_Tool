@@ -13,7 +13,8 @@ import {
   MessageCircle,
   TrendingUp,
   DollarSign,
-  Brain
+  Brain,
+  Receipt
 } from 'lucide-react'
 
 function DashboardContent() {
@@ -92,6 +93,14 @@ function DashboardContent() {
       path: '/tax',
       color: 'bg-red-500/10 text-red-500',
       highlight: 'hover:border-red-500/20',
+    },
+    {
+      title: 'EMI Calculation',
+      description: 'Calculate EMI, see breakdown, and analyze amortization schedule',
+      icon: Receipt,
+      path: '/emi-calculator',
+      color: 'bg-yellow-500/10 text-yellow-500',
+      highlight: 'hover:border-yellow-500/20',
     }
   ]
 

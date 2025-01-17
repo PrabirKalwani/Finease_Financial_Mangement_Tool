@@ -13,13 +13,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { calculateTax } from "@/lib/functions";
 import TaxResultComponent from "@/components/TaxResultComponent";
 import { RegimeTaxResult } from "@/lib/types";
@@ -73,7 +68,7 @@ export default function TaxCalculatorForm() {
       deductionOther: "",
     },
   });
-  
+
   const [taxResult, setTaxResult] = useState<RegimeTaxResult>({
     old: {
       totalIncome: 0,
@@ -111,7 +106,7 @@ export default function TaxCalculatorForm() {
         other: data.exemptions.other || "0",
       },
     };
-  
+
     const deductionsData = {
       deduction80C: data.deduction80C || "0",
       deduction80D: data.deduction80D || "0",
@@ -122,7 +117,7 @@ export default function TaxCalculatorForm() {
       deduction80EEA: data.deduction80EEA || "0",
       deductionOther: data.deductionOther || "0",
     };
-  
+
     const yearData = {
       old_sd: 50000,
       new_sd: 75000,
@@ -146,10 +141,10 @@ export default function TaxCalculatorForm() {
         { start: 1500001, end: Infinity, percent: 30 },
       ],
     };
-  
+
     const oldResult = calculateTax(incomeData, deductionsData, "old", yearData);
     const newResult = calculateTax(incomeData, deductionsData, "new", yearData);
-  
+
     setTaxResult({ old: oldResult, new: newResult });
   };
 

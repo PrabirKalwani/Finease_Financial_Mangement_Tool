@@ -7,7 +7,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Leaf, Coins, PiggyBank, TrendingUp } from "lucide-react";
+import { ArrowRight, PiggyBank, TrendingUp } from "lucide-react";
 
 const Tax = () => {
   return (

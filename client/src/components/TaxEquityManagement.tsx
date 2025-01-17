@@ -26,11 +26,14 @@ import {
 } from "lucide-react";
 import { PortfolioAsset } from "@/lib/types";
 import { useAssets } from "@/context/AssetsContext";
+import { useCurrency } from "@/context/CurrencyContext";
 
 const LTCG_EXEMPTION_LIMIT = 125000; // ₹1.25L LTCG exemption
 
 const TaxManagementDashboard = () => {
-  const { assets, setAssets } = useAssets();
+  const { assets } = useAssets();
+
+  const { formatAmount } = useCurrency();
 
   const calculateHoldingPeriod = (purchaseDate: Date) => {
     const today = new Date();
@@ -55,7 +58,7 @@ const TaxManagementDashboard = () => {
     // For stocks: STCG (20%) if held < 1 year, LTCG (12.5%) if > 1 year
     if (asset.type === "stock") {
       if (holdingPeriod <= 365) {
-        return profit * 0.20; // STCG
+        return profit * 0.2; // STCG
       } else {
         // Apply LTCG exemption
         const taxableProfit = Math.max(0, profit);
@@ -88,10 +91,10 @@ const TaxManagementDashboard = () => {
       profit: calculateProfit(asset),
       suggestedAction:
         remainingExemption > 0
-          ? `Consider booking profit up to ₹${Math.min(
+          ? `Consider booking profit up to ${formatAmount(Math.min(
               calculateProfit(asset),
               remainingExemption
-            ).toLocaleString()}`
+            )).toLocaleString()}`
           : "Consider waiting for next financial year",
     }));
   };
@@ -134,27 +137,26 @@ const TaxManagementDashboard = () => {
               <div className="flex justify-between items-center">
                 <span className="text-sm">Total Portfolio Value</span>
                 <span className="text-2xl font-bold">
-                  ₹{totalPortfolioValue.toLocaleString()}
+                  {formatAmount(totalPortfolioValue)}
                 </span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-sm">Estimated Tax Liability</span>
                 <span className="text-xl text-red-500">
-                  ₹{totalTaxLiability.toLocaleString()}
+                  {formatAmount(totalTaxLiability)}
                 </span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-sm">LTCG Exemption Remaining</span>
                 <span className="text-xl text-green-500">
-                  ₹
-                  {Math.max(
+                  {formatAmount(Math.max(
                     0,
                     LTCG_EXEMPTION_LIMIT -
                       profitHarvestingOpportunities.reduce(
                         (acc, asset) => acc + asset.profit,
                         0
                       )
-                  ).toLocaleString()}
+                  )).toLocaleString()}
                 </span>
               </div>
             </div>
@@ -163,7 +165,9 @@ const TaxManagementDashboard = () => {
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-2xl">Tax Harvesting Opportunities</CardTitle>
+            <CardTitle className="text-2xl">
+              Tax Harvesting Opportunities
+            </CardTitle>
             <CardDescription>
               Profit and loss harvesting opportunities
             </CardDescription>
@@ -186,8 +190,8 @@ const TaxManagementDashboard = () => {
                         </span>
                       </div>
                       <Badge variant="destructive">
-                        Loss: ₹
-                        {Math.abs(calculateProfit(asset)).toLocaleString()}
+                        Loss: 
+                        {formatAmount(Math.abs(calculateProfit(asset))).toLocaleString()}
                       </Badge>
                     </div>
                   ))}
@@ -217,7 +221,7 @@ const TaxManagementDashboard = () => {
                         </div>
                       </div>
                       <Badge variant="default" className="bg-green-500">
-                        Profit: ₹{asset.profit.toLocaleString()}
+                        Profit: {asset.profit.toLocaleString()}
                       </Badge>
                     </div>
                   ))}
@@ -261,15 +265,15 @@ const TaxManagementDashboard = () => {
                           {asset.ticker}
                         </TableCell>
                         <TableCell>{asset.quantity}</TableCell>
-                        <TableCell>₹{asset.purchasePrice}</TableCell>
-                        <TableCell>₹{asset.currentPrice}</TableCell>
+                        <TableCell>{formatAmount(asset.purchasePrice)}</TableCell>
+                        <TableCell>{formatAmount(asset.currentPrice)}</TableCell>
                         <TableCell className="flex items-center gap-1">
                           {asset.currentPrice > asset.purchasePrice ? (
                             <TrendingUp className="text-green-500" size={16} />
                           ) : (
                             <TrendingDown className="text-red-500" size={16} />
                           )}
-                          ₹{Math.abs(calculateProfit(asset)).toLocaleString()}
+                          {formatAmount(Math.abs(calculateProfit(asset))).toLocaleString()}
                         </TableCell>
                         <TableCell>
                           {Math.floor(
@@ -278,7 +282,7 @@ const TaxManagementDashboard = () => {
                           y {calculateHoldingPeriod(asset.purchaseDate) % 365}d
                         </TableCell>
                         <TableCell>
-                          ₹{calculateTax(asset).toLocaleString()}
+                          {formatAmount(calculateTax(asset)).toLocaleString()}
                         </TableCell>
                       </TableRow>
                     ))}
@@ -315,15 +319,15 @@ const TaxManagementDashboard = () => {
                           {asset.name}
                         </TableCell>
                         <TableCell>{asset.quantity}</TableCell>
-                        <TableCell>₹{asset.purchasePrice}</TableCell>
-                        <TableCell>₹{asset.currentPrice}</TableCell>
+                        <TableCell>{formatAmount(asset.purchasePrice)}</TableCell>
+                        <TableCell>{formatAmount(asset.currentPrice)}</TableCell>
                         <TableCell className="flex items-center gap-1">
                           {asset.currentPrice > asset.purchasePrice ? (
                             <TrendingUp className="text-green-500" size={16} />
                           ) : (
                             <TrendingDown className="text-red-500" size={16} />
                           )}
-                          ₹{Math.abs(calculateProfit(asset)).toLocaleString()}
+                          {formatAmount(Math.abs(calculateProfit(asset))).toLocaleString()}
                         </TableCell>
                         <TableCell>
                           {Math.floor(
@@ -332,7 +336,7 @@ const TaxManagementDashboard = () => {
                           y {calculateHoldingPeriod(asset.purchaseDate) % 365}d
                         </TableCell>
                         <TableCell>
-                          ₹{calculateTax(asset).toLocaleString()}
+                          {formatAmount(calculateTax(asset)).toLocaleString()}
                         </TableCell>
                       </TableRow>
                     ))}
