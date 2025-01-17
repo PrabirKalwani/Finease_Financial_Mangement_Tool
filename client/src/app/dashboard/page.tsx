@@ -85,6 +85,14 @@ export default function DashboardPage() {
       color: 'bg-orange-500/10 text-orange-500',
       highlight: 'hover:border-orange-500/20',
     },
+    {
+      title: 'Tax Management',
+      description: 'Analyze your Tax and optimize to reduce tax liability',
+      icon: DollarSign,
+      path: '/tax',
+      color: 'bg-red-500/10 text-red-500',
+      highlight: 'hover:border-red-500/20',
+    }
   ]
 
   return (
