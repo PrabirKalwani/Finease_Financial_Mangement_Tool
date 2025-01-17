@@ -142,23 +142,27 @@ class FirebaseAuthController {
 
   async checkUserDetailsByEmail(req, res) {
     try {
-      const { email } = req.query;
+      const { email } = req.body;
       if (!email) {
         return res.status(400).json({ error: "Email is required" });
       }
 
-      // Query Users collection for the user document based on email
       const UsersCollection = collection(db, "Users");
-      const emailQuery = query(UsersCollection, where("email", "==", email));
-      const querySnapshot = await getDocs(emailQuery);
+      const querySnapshot = await getDocs(UsersCollection);
 
-      if (querySnapshot.empty) {
+      // Look for the document with a matching email
+      let userData = null;
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        if (data.email === email) {
+          userData = { ...data };
+        }
+      });
+
+      // If no user found, return 404
+      if (!userData) {
         return res.status(404).json({ error: "User not found" });
       }
-
-      // Get the user data
-      const userDoc = querySnapshot.docs[0];
-      const userData = userDoc.data();
 
       // Extract required details
       const { experience, investingquota, riskApettite } = userData;
@@ -171,10 +175,10 @@ class FirebaseAuthController {
         status: "Details retrieved successfully",
       };
 
-      res.status(200).json(response);
+      return res.status(200).json(response);
     } catch (error) {
       console.error(error);
-      res
+      return res
         .status(500)
         .json({ error: "An error occurred while checking user details" });
     }
