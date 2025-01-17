@@ -1,63 +1,113 @@
 'use client'
 
-import { useState } from 'react'
-import BottomNav from '@/components/BottomNav'
-import LogoutButton from '@/components/LogoutButton'
-import { useTheme } from '@/context/ThemeContext'
-import UserDetailsModal from '@/components/UserDetailsModal'
+import { useEffect, useState } from 'react'
+import { useUser } from '@/context/UserContext'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Loader2 } from 'lucide-react'
+import toast from 'react-hot-toast'
+
+interface UserDetails {
+  experience: string
+  investingquota: number
+  riskApettite: string
+}
 
 export default function ProfilePage() {
-  const { isDarkMode, toggleDarkMode } = useTheme()
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  // In a real app, you would get this from your auth context or state management
-  const userEmail = "user@example.com" // Replace this with actual user email
+  const [loading, setLoading] = useState(true)
+  const [userDetails, setUserDetails] = useState<UserDetails | null>(null)
+  const { email } = useUser()
+
+  useEffect(() => {
+    async function fetchUserDetails() {
+      if (!email) return
+      
+      try {
+        const response = await fetch('http://65.1.209.37:8080/user-details', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email }),
+        })
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch user details')
+        }
+
+        const data = await response.json()
+        setUserDetails({
+          experience: data.experience,
+          investingquota: data.investingquota,
+          riskApettite: data.riskApettite,
+        })
+      } catch (error) {
+        toast.error('Failed to load profile data')
+        console.error('Error:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchUserDetails()
+  }, [email])
+
+  if (loading) {
+    return (
+      <div className="min-h-screen grid place-items-center">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    )
+  }
+
+  if (!userDetails) {
+    return (
+      <div className="min-h-screen grid place-items-center">
+        <p className="text-muted-foreground">No profile data available</p>
+      </div>
+    )
+  }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        <div className="px-4 py-6 sm:px-0">
-          <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-            <div className="flex justify-between items-center mb-6">
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Profile</h1>
-              <button
-                onClick={toggleDarkMode}
-                className="p-2 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
-              >
-                {isDarkMode ? (
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-                  </svg>
-                ) : (
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                  </svg>
-                )}
-              </button>
-            </div>
-
-            <div className="space-y-6">
+    <main className="min-h-screen bg-background">
+      <div className="container mx-auto p-4 space-y-8">
+        <h1 className="text-3xl font-bold">Profile</h1>
+        
+        <div className="grid gap-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Personal Information</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
               <div>
-                <button
-                  onClick={() => setIsModalOpen(true)}
-                  className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                >
-                  Update Financial Details
-                </button>
+                <label className="text-sm text-muted-foreground">Email</label>
+                <p className="text-lg font-medium">{email}</p>
               </div>
+            </CardContent>
+          </Card>
 
-              <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
-                <LogoutButton />
+          <Card>
+            <CardHeader>
+              <CardTitle>Investment Profile</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <label className="text-sm text-muted-foreground">Experience Level</label>
+                <p className="text-lg font-medium capitalize">{userDetails.experience}</p>
               </div>
-            </div>
-          </div>
+              
+              <div>
+                <label className="text-sm text-muted-foreground">Monthly Investment Quota</label>
+                <p className="text-lg font-medium">₹{userDetails.investingquota.toLocaleString()}</p>
+              </div>
+              
+              <div>
+                <label className="text-sm text-muted-foreground">Risk Appetite</label>
+                <p className="text-lg font-medium capitalize">{userDetails.riskApettite}</p>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
-      <BottomNav />
-      <UserDetailsModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        email={userEmail}
-      />
-    </div>
+    </main>
   )
 } 

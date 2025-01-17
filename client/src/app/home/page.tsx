@@ -1,6 +1,5 @@
 'use client'
 
-import BottomNav from '@/components/BottomNav'
 import TransactionDashboard from '../../components/TransactionDashboard'
 
 export default function DashboardPage() {
@@ -35,7 +34,6 @@ export default function DashboardPage() {
       </h1>
       <p className="text-secondary-foreground mb-6">{currentDate}</p>
       <TransactionDashboard/>
-      <BottomNav />
     </div>
   )
-}
+} 

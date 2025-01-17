@@ -1,18 +1,19 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import { login } from '@/app/actions'
-import toast from 'react-hot-toast'
 import { useUser } from '@/context/UserContext'
+import toast from 'react-hot-toast'
 
 export default function LoginForm() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const router = useRouter()
-  const searchParams = useSearchParams()
-  const { setEmail: setUserEmail, setShowDetailsModal } = useUser()
+  const { setEmail: setUserEmail } = useUser()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -22,75 +23,66 @@ export default function LoginForm() {
       const result = await login(email, password)
       if (result.success) {
         setUserEmail(email)
-        setShowDetailsModal(true) // Show the modal for all logins
-        toast.success('Logged in successfully')
-        const returnUrl = searchParams.get('returnUrl') || '/home'
-        router.push(returnUrl)
+        router.push('/dashboard?showOnboarding=true')
       } else {
-        toast.error(result.error || 'Failed to login')
+        toast.error(result.error || 'Login failed')
       }
-    } catch  {
-      toast.error('An error occurred')
+    } catch (error) {
+      toast.error('An unexpected error occurred')
     } finally {
       setLoading(false)
     }
   }
 
   return (
-    <form onSubmit={handleSubmit} className="mt-8 space-y-6">
-      <div className="rounded-md shadow-sm -space-y-px">
+    <div className="w-full max-w-md space-y-8 bg-card p-8 rounded-lg shadow-lg">
+      <div className="text-center">
+        <h2 className="text-2xl font-bold">Welcome back</h2>
+        <p className="text-sm text-muted-foreground">Sign in to your account</p>
+      </div>
+
+      <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label htmlFor="email" className="sr-only">
-            Email address
+          <label htmlFor="email" className="block text-sm font-medium">
+            Email
           </label>
-          <input
+          <Input
             id="email"
-            name="email"
             type="email"
-            autoComplete="email"
-            required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 dark:border-gray-700 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm dark:bg-gray-800"
-            placeholder="Email address"
+            required
+            className="mt-1"
+            placeholder="Enter your email"
           />
         </div>
+
         <div>
-          <label htmlFor="password" className="sr-only">
+          <label htmlFor="password" className="block text-sm font-medium">
             Password
           </label>
-          <input
+          <Input
             id="password"
-            name="password"
             type="password"
-            autoComplete="current-password"
-            required
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 dark:border-gray-700 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm dark:bg-gray-800"
-            placeholder="Password"
+            required
+            className="mt-1"
+            placeholder="Enter your password"
           />
         </div>
-      </div>
 
-      <div className="flex items-center justify-between">
-        <div className="text-sm">
-          <a href="/forgot-password" className="font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300">
-            Forgot your password?
-          </a>
-        </div>
-      </div>
-
-      <div>
-        <button
-          type="submit"
-          disabled={loading}
-          className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
-        >
+        <Button type="submit" className="w-full" disabled={loading}>
           {loading ? 'Signing in...' : 'Sign in'}
-        </button>
+        </Button>
+      </form>
+
+      <div className="text-center text-sm">
+        <a href="#" className="text-primary hover:underline">
+          Forgot your password?
+        </a>
       </div>
-    </form>
+    </div>
   )
 }
 

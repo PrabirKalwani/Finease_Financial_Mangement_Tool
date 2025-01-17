@@ -8,12 +8,67 @@ import TransactionLineChart from '@/components/TransactionLineChart'
 import TransactionPieChart from '@/components/TransactionPieChart'
 import TransactionSummary from '@/components/TransactionSummary'
 import { generateMockTransactions } from '@/lib/mockData'
+import { Button } from '@/components/ui/button'
+import { Transaction } from '@/lib/types'
 
 export default function TransactionDashboard() {
-  const [transactions] = useState(generateMockTransactions())
+  const [transactions, setTransactions] = useState<Transaction[]>(generateMockTransactions())
+
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      const text = e.target?.result as string
+      const lines = text.split('\n')
+      const headers = lines[0].split(',')
+      
+      const parsedTransactions: Transaction[] = lines
+        .slice(1) // Skip header row
+        .filter(line => line.trim()) // Skip empty lines
+        .map((line, index) => {
+          const values = line.split(',')
+          return {
+            id: `transaction-${index}`,
+            date: new Date(values[0]),
+            type: values[1] as 'credit' | 'debit',
+            amount: parseFloat(values[2]),
+            category: values[3].trim()
+          }
+        })
+
+      setTransactions(parsedTransactions)
+    }
+    reader.readAsText(file)
+  }
 
   return (
     <div className="space-y-4">
+      <div className="flex justify-between items-center mb-4">
+        <div className="flex items-center space-x-2">
+          <input
+            type="file"
+            accept=".csv"
+            onChange={handleFileUpload}
+            className="hidden"
+            id="csv-upload"
+          />
+          <Button
+            onClick={() => document.getElementById('csv-upload')?.click()}
+            variant="outline"
+          >
+            Upload CSV
+          </Button>
+          <Button
+            onClick={() => setTransactions(generateMockTransactions())}
+            variant="outline"
+          >
+            Use Sample Data
+          </Button>
+        </div>
+      </div>
+
       <TransactionSummary transactions={transactions} />
 
       {/* Tabs for medium screens */}

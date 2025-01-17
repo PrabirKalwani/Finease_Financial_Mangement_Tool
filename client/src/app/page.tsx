@@ -1,14 +1,15 @@
-import LoginForm from "@/components/LoginForm"
-import { Suspense } from 'react'
+'use client'
 
-export default function Home() {
-  return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-24">
-              <Suspense fallback={<div>Loading...</div>}>
+import { useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 
-      <LoginForm />
-      </Suspense>
-    </main>
-  )
+export default function HomePage() {
+  const router = useRouter()
+
+  useEffect(() => {
+    router.replace('/dashboard')
+  }, [router])
+
+  return null
 }
 

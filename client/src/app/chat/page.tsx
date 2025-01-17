@@ -1,6 +1,5 @@
 'use client'
 
-import BottomNav from '@/components/BottomNav'
 import { useState, useEffect } from 'react'
 import { useUser } from '@/context/UserContext'
 
@@ -135,7 +134,6 @@ export default function ChatPage() {
         </div>
       </main>
 
-      <BottomNav />
     </div>
   )
 }
