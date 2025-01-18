@@ -31,7 +31,7 @@ interface MarketMood {
 
 const getMarketMood = async (): Promise<string> => {
   try {
-    const response = await fetch('https://65.1.209.37:5000/mmi', {
+    const response = await fetch('http://65.1.209.37:5000/mmi', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

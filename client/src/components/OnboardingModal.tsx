@@ -33,7 +33,7 @@ export default function OnboardingModal({ isOpen, onClose, email }: OnboardingMo
 
     setLoading(true)
     try {
-      const response = await fetch('https://65.1.209.37:8080/update-user-details', {
+      const response = await fetch('http://65.1.209.37:8080/update-user-details', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
