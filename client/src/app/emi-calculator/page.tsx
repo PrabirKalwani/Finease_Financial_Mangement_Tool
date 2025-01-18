@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -67,7 +67,7 @@ const EMICalculator: React.FC = () => {
     return emi;
   };
 
-  const generateAmortizationSchedule = (
+  const generateAmortizationSchedule = useCallback((
     principal: number,
     rate: number,
     time: number,
@@ -75,7 +75,7 @@ const EMICalculator: React.FC = () => {
   ): AmortizationRow[] => {
     const monthlyRate = rate / (12 * 100);
     let remainingPrincipal = principal;
-    let schedule: AmortizationRow[] = [];
+    const schedule: AmortizationRow[] = [];
     let totalInterest = 0;
     let totalPrincipal = 0;
     
@@ -111,7 +111,7 @@ const EMICalculator: React.FC = () => {
     }
 
     return schedule;
-  };
+  }, [calculateEMI]);
 
   const handlePrepaymentChange = (month: number, value: string): void => {
     const prepayments: Prepayments = {};
@@ -151,7 +151,7 @@ const EMICalculator: React.FC = () => {
     setMonthlyEMI(emi);
     const schedule = generateAmortizationSchedule(loanAmount, interestRate, tenure);
     setAmortizationSchedule(schedule);
-  }, [loanAmount, interestRate, tenure]);
+  }, [loanAmount, interestRate, tenure, generateAmortizationSchedule]);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement>,

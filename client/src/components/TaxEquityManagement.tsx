@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo } from "react";
+import React, { useMemo, useCallback } from "react";
 import {
   Card,
   CardContent,
@@ -49,7 +49,7 @@ const TaxManagementDashboard = () => {
     );
   };
 
-  const calculateTax = (asset: PortfolioAsset) => {
+  const calculateTax = useCallback((asset: PortfolioAsset) => {
     const holdingPeriod = calculateHoldingPeriod(asset.purchaseDate);
     const profit = calculateProfit(asset);
 
@@ -68,7 +68,7 @@ const TaxManagementDashboard = () => {
 
     // For commodities: STCG (30%) if held < 3 years, LTCG (20%) if > 3 years
     return holdingPeriod <= 3 * 365 ? profit * 0.3 : profit * 0.2;
-  };
+  }, [calculateHoldingPeriod, calculateProfit]);
 
   const getLTCGProfitHarvestingOpportunities = (assets: PortfolioAsset[]) => {
     const longTermAssets = assets.filter((asset) => {
@@ -116,11 +116,11 @@ const TaxManagementDashboard = () => {
 
   const totalTaxLiability = useMemo(() => {
     return assets.reduce((acc, asset) => acc + calculateTax(asset), 0);
-  }, [assets]);
+  }, [assets, calculateTax]);
 
   const profitHarvestingOpportunities = useMemo(() => {
     return getLTCGProfitHarvestingOpportunities(assets);
-  }, [assets]);
+  }, [assets, getLTCGProfitHarvestingOpportunities]);
 
   return (
     <div className="p-4 max-w-7xl mx-auto space-y-6">
