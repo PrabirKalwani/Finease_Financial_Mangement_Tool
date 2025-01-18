@@ -5,6 +5,7 @@ import { useSearchParams, useRouter } from 'next/navigation'
 import { useUser } from '@/context/UserContext'
 import OnboardingModal from '@/components/OnboardingModal'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import CryptoDashboard from '@/components/CryptoDashboard'
 import { 
   ArrowRight, 
   WalletCards, 
@@ -183,6 +184,12 @@ function DashboardContent() {
               </CardContent>
             </Card>
           ))}
+        </div>
+
+        {/* Crypto Dashboard */}
+        <div className="space-y-4">
+          <h2 className="text-2xl font-bold">Cryptocurrency Market</h2>
+          <CryptoDashboard />
         </div>
       </div>
 
