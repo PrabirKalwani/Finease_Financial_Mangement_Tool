@@ -2,7 +2,7 @@
 
 import { cookies } from 'next/headers'
 
-const API_URL = 'http://65.1.209.37:8080/api'
+const API_URL = 'https://65.1.209.37:8080/api'
 
 export async function login(email: string, password: string) {
   try {

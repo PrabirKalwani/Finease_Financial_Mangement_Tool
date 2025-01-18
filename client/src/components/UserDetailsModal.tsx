@@ -30,7 +30,7 @@ export default function UserDetailsModal({ isOpen, onClose, email }: UserDetails
     console.log('Sending request with payload:', payload)
 
     try {
-      const response = await fetch('http://65.1.209.37:8080/update-user-details', {
+      const response = await fetch('https://65.1.209.37:8080/update-user-details', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
