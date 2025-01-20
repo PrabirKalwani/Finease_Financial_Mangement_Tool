@@ -1,4 +1,4 @@
-# ACE Hackathon
+# Finease - Finance With Ease
 
 ## Prerequisites
 
@@ -7,6 +7,18 @@ Make sure you have the following installed:
 - Node.js (v14+)
 - NPM or Yarn
 - Firebase Account
+- Python (for Flask backend)
+
+## Project Structure
+
+```
+/auth-backend            # auth Backend server code
+  └── /src          # Source code for backend
+  └── firebaseService.json  # Firebase service configuration
+  └── .env          # Environment variables for backend
+/client             # Frontend - Next.js app
+/ai-api-backend     # AI API Backend - Flask app (handles /mmi endpoint)
+```
 
 ## Steps to Set Up the Backend
 
@@ -14,12 +26,45 @@ Make sure you have the following installed:
 
 ### 2. Install Dependencies
 
-Use the package manager of your choice to install all necessary dependencies:
+For both backend and frontend, use the package manager of your choice to install all necessary dependencies:
+
+#### Backend
+
+In the `/auth-backend` directory, run:
 
 ```bash
 npm install
 # or
-yarn install
+pnpm install
+```
+
+#### Frontend
+
+In the `/client` directory, run:
+
+```bash
+npm install
+# or
+pnpm install
+```
+
+#### AI API Backend (Flask)
+
+In the `/ai-api-backend` directory, set up a Python environment and install the required dependencies:
+
+
+For Windows :-
+```bash
+python -m venv .venv 
+.venv/Scripts/activate
+pip install -r requirements.txt
+```
+
+For MacOS/Linux:-
+```bash
+python -m venv .venv 
+source .venv/bin/activate
+pip install -r requirements.txt
 ```
 
 ### 3. Add `firebaseService.json`
@@ -27,15 +72,15 @@ yarn install
 Copy the `firebaseService.json` file to the following path in your backend directory:
 
 ```
-/Backend/src/firebaseService.json
+/auth-backend/src/firebaseService.json
 ```
 
 ### 4. Add `.env` File
 
-Create a `.env` file in the `/Backend/src/` directory and add your environment variables. Rename the provided file to `.env`:
+Create a `.env` file in the `/auth-backend/src/` directory and add your environment variables. Rename the provided file to `.env`:
 
 ```
-/Backend/src/.env
+/auth-backend/src/.env
 ```
 
 ### 5. Import API Calls for Testing
@@ -88,13 +133,60 @@ To run the backend server, use the following command:
 
 ```bash
 node app.js
-
 ```
 
 Your backend should now be up and running!
 
 ---
 
+## Frontend Setup (Next.js)
+
+1. Navigate to the `/client` directory.
+
+2. Start the frontend Next.js server:
+
+```bash
+npm run dev
+# or
+pnpm dev
+```
+
+The frontend should now be live at `http://localhost:3000`.
+
+### Firebase Authentication Integration
+
+The Firebase authentication is handled in the `/auth-backend` folder. This module manages user registration, login, logout, and other authentication functionalities. It communicates with Firebase services to verify and authenticate users securely.
+
+## AI API Backend Setup (Flask)
+
+1. Navigate to the `/ai-api-backend` directory.
+
+2. Ensure you have installed all Python dependencies by running:
+
+```bash
+pip install -r requirements.txt
+```
+
+3. The Flask API includes an endpoint to interact with the AI model:
+
+- **AI Model Endpoint**  
+  ```
+  POST /mmi
+  ```
+
+   This endpoint will process the request and return AI-generated results. Make sure to send the appropriate data when making the POST request.
+
+To run the Flask API, use:
+
+```bash
+python app.py
+```
+
+---
+
 ### Author
 
 - **Prabir Kalwani**
+- **Snehil Sinha**
+- **Aayush Shah**
+- **Krish Pillai**
